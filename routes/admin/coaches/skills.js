@@ -1,42 +1,80 @@
 const express = require("express");
-
+const { z } = require("zod");
 const router = express.Router();
-const { dataSource } = require("../../../db/data-source");
 const logger = require("../../../utils/logger")("Skill");
+const { dataSource } = require("../../../db/data-source");
 
-router.get("/", async (req, res, next) => {
-  const skills = await dataSource.getRepository("Skill").find();
-  res.status(200).json({
-    status: "success",
-    message: "查詢成功",
-    data: skills,
-  });
+const { catchAsync } = require("../../../utils/catchAsync");
+const { sendSuccess } = require("../../../utils/response");
+const { HTTP_STATUS } = require("../../../constants/httpStatus");
+const { Conflict, NotFound } = require("../../../errors");
+const { validate } = require("../../../middlewares/validate.middleware");
+
+const createSkillSchema = z.object({
+  name: z.string().min(1, "技能名稱為必填"),
 });
 
-router.post("/", async (req, res, next) => {
-  const skillRepo = dataSource.getRepository("Skill");
-  const newSave = skillRepo.create({
-    name: req.body.name,
-  });
-  const result = await skillRepo.save(newSave);
-  res.status(200).json({
-    status: "success",
-    message: "新增成功",
-    data: {
-      id: result.id,
-      name: result.name,
-    },
-  });
-});
+router.get(
+  "/",
+  catchAsync(async (req, res) => {
+    const skills = await dataSource.getRepository("Skill").find();
+    sendSuccess(res, { data: skills, message: "查詢成功" });
+  }),
+);
 
-router.delete("/:skillId", async (req, res, next) => {
-  const skillRepo = dataSource.getRepository("Skill");
-  await skillRepo.delete({ id: req.params.skillId });
-  res.status(200).json({
-    status: "success",
-    message: "刪除成功",
-    data: null,
-  });
-});
+router.post(
+  "/",
+  validate(createSkillSchema),
+  catchAsync(async (req, res, next) => {
+    const skillRepo = dataSource.getRepository("Skill");
+    const { name } = req.body;
+
+    const existingSkill = await skillRepo.findOne({
+      select: ["name"],
+      where: {
+        name,
+      },
+    });
+
+    if (existingSkill) {
+      return next(Conflict("資料重複"));
+    }
+
+    const newSkill = skillRepo.create({
+      name,
+    });
+    const createdSkill = await skillRepo.save(newSkill);
+
+    sendSuccess(res, {
+      data: createdSkill,
+      message: "新增成功",
+      statusCode: HTTP_STATUS.CREATED,
+    });
+  }),
+);
+
+router.delete(
+  "/:skillId",
+  validate(z.object({ skillId: z.string().uuid() }), "params"),
+  catchAsync(async (req, res, next) => {
+    const skillRepo = dataSource.getRepository("Skill");
+    const { skillId } = req.params;
+
+    const existingSkill = await skillRepo.findOne({
+      select: ["id"],
+      where: {
+        id: skillId,
+      },
+    });
+
+    if (!existingSkill) {
+      return next(NotFound("找不到此技能"));
+    }
+
+    await skillRepo.delete({ id: skillId });
+
+    sendSuccess(res, { message: "刪除成功" });
+  }),
+);
 
 module.exports = router;

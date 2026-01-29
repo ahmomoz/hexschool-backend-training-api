@@ -4,7 +4,7 @@ const router = express.Router();
 const { dataSource } = require("../../../db/data-source");
 const logger = require("../../../utils/logger")("Coach");
 
-// 將使用者新增為教練
+// [POST] 將使用者新增為教練
 router.post("/:userId", async (req, res, next) => {
   const { userId } = req.params;
 
