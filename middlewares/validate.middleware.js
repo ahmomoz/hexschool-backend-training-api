@@ -1,4 +1,4 @@
-const { BadRequest } = require("../errors");
+const { BadRequest } = require("@/errors");
 
 const validate =
   (schema, source = "body") =>

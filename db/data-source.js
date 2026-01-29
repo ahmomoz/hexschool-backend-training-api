@@ -1,12 +1,12 @@
 const { DataSource } = require("typeorm");
-const config = require("../config/index");
+const config = require("@/config/index");
 
-const Coach = require("../entities/Coach");
-const CoachLinkSkill = require("../entities/CoachLinkSkill");
-const Course = require("../entities/Course");
-const CreditPackage = require("../entities/CreditPackages");
-const Skill = require("../entities/Skill");
-const User = require("../entities/User");
+const Coach = require("@/entities/Coach");
+const CoachLinkSkill = require("@/entities/CoachLinkSkill");
+const Course = require("@/entities/Course");
+const CreditPackage = require("@/entities/CreditPackages");
+const Skill = require("@/entities/Skill");
+const User = require("@/entities/User");
 
 const dataSource = new DataSource({
   type: "postgres",

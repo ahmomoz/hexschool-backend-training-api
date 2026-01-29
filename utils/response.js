@@ -1,4 +1,4 @@
-const { HTTP_STATUS } = require("../constants/httpStatus");
+const { HTTP_STATUS } = require("@/constants/httpStatus");
 
 /**
  * 統一成功回應格式

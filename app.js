@@ -3,14 +3,14 @@ const cors = require("cors");
 const path = require("path");
 const pinoHttp = require("pino-http");
 
-const logger = require("./utils/logger")("App");
-const creditPackageRouter = require("./routes/creditPackage");
-const coachRouter = require("./routes/admin/coaches");
-const skillRouter = require("./routes/admin/coaches/skills");
-const userRouter = require("./routes/users");
+const logger = require("@/utils/logger")("App");
+const creditPackageRouter = require("@/routes/creditPackage");
+const coachRouter = require("@/routes/admin/coaches");
+const skillRouter = require("@/routes/admin/coaches/skills");
+const userRouter = require("@/routes/users");
 
-const { NotFound } = require("./errors");
-const { globalErrorHandler } = require("./middlewares/error.middleware");
+const { NotFound } = require("@/errors");
+const { globalErrorHandler } = require("@/middlewares/error.middleware");
 
 const app = express();
 

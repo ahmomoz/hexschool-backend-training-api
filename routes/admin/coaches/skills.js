@@ -1,14 +1,14 @@
 const express = require("express");
-const { z } = require("zod");
 const router = express.Router();
-const logger = require("../../../utils/logger")("Skill");
-const { dataSource } = require("../../../db/data-source");
+const logger = require("@/utils/logger")("Skill");
+const { z } = require("zod");
+const { dataSource } = require("@/db/data-source");
 
-const { catchAsync } = require("../../../utils/catchAsync");
-const { sendSuccess } = require("../../../utils/response");
-const { HTTP_STATUS } = require("../../../constants/httpStatus");
-const { Conflict, NotFound } = require("../../../errors");
-const { validate } = require("../../../middlewares/validate.middleware");
+const { catchAsync } = require("@/utils/catchAsync");
+const { sendSuccess } = require("@/utils/response");
+const { HTTP_STATUS } = require("@/constants/httpStatus");
+const { Conflict, NotFound } = require("@/errors");
+const { validate } = require("@/middlewares/validate.middleware");
 
 const createSkillSchema = z.object({
   name: z.string().min(1, "技能名稱為必填"),

@@ -1,13 +1,14 @@
 #!/usr/bin/env node
+require('module-alias/register')
 
 /**
  * Module dependencies.
  */
 const http = require('http')
-const config = require('../config/index')
-const app = require('../app') // 導入 app.js
-const logger = require('../utils/logger')('www')
-const { dataSource } = require('../db/data-source')
+const config = require('@/config/index')
+const app = require('@/app') // 導入 app.js
+const logger = require('@/utils/logger')('www')
+const { dataSource } = require('@/db/data-source')
 
 const port = config.get('web.port')
 

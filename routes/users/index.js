@@ -1,8 +1,8 @@
 const express = require("express");
 
 const router = express.Router();
-const { dataSource } = require("../../db/data-source");
-const logger = require("../../utils/logger")("User");
+const { dataSource } = require("@/db/data-source");
+const logger = require("@/utils/logger")("User");
 
 // 使用者註冊
 router.post("/signup", async (req, res, next) => {

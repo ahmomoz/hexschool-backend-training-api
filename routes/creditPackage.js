@@ -1,8 +1,8 @@
 const express = require("express");
 
 const router = express.Router();
-const { dataSource } = require("../db/data-source");
-const logger = require("../utils/logger")("CreditPackage");
+const { dataSource } = require("@/db/data-source");
+const logger = require("@/utils/logger")("CreditPackage");
 
 router.get("/", async (req, res, next) => {
   const creditPackages = await dataSource.getRepository("CreditPackage").find();

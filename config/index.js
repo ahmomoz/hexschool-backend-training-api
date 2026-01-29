@@ -1,8 +1,8 @@
 const dotenv = require('dotenv')
 
 const result = dotenv.config()
-const db = require('./db')
-const web = require('./web')
+const db = require('@/config/db')
+const web = require('@/config/web')
 
 if (result.error) {
   throw result.error

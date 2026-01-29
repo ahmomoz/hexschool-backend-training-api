@@ -1,8 +1,8 @@
 const express = require("express");
 
 const router = express.Router();
-const { dataSource } = require("../../../db/data-source");
-const logger = require("../../../utils/logger")("Coach");
+const { dataSource } = require("@/db/data-source");
+const logger = require("@/utils/logger")("Coach");
 
 // [POST] 將使用者新增為教練
 router.post("/:userId", async (req, res, next) => {

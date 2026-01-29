@@ -1,4 +1,4 @@
-const { HTTP_STATUS } = require("../constants/httpStatus.js");
+const { HTTP_STATUS } = require("@/constants/httpStatus.js");
 
 const globalErrorHandler = (err, req, res, next) => {
   let { statusCode, message, data, isOperational } = err;

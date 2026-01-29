@@ -1,5 +1,5 @@
-const { AppError } = require("./appError.js");
-const { HTTP_STATUS } = require("../constants/httpStatus.js");
+const { AppError } = require("@/errors/appError.js");
+const { HTTP_STATUS } = require("@/constants/httpStatus.js");
 
 const BadRequest = (message, data = null) =>
   new AppError({ message, statusCode: HTTP_STATUS.BAD_REQUEST, data });
