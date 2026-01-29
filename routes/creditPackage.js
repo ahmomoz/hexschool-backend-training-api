@@ -16,6 +16,8 @@ const createCreditPackageSchema = z.object({
   price: z.coerce.number().min(1, "價格為必填"),
 });
 
+// 取得購買方案列表
+// GET /api/credit-package
 router.get(
   "/",
   catchAsync(async (req, res, next) => {
@@ -26,6 +28,8 @@ router.get(
   }),
 );
 
+// 新增購買方案
+// POST /api/credit-package
 router.post(
   "/",
   validate(createCreditPackageSchema),
@@ -60,6 +64,8 @@ router.post(
   }),
 );
 
+// 刪除購買方案
+// DELETE /api/credit-package/:creditPackageId
 router.delete(
   "/:creditPackageId",
   validate(z.object({ creditPackageId: z.string().uuid() }), "params"),

@@ -14,6 +14,8 @@ const createSkillSchema = z.object({
   name: z.string().min(1, "技能名稱為必填"),
 });
 
+// 取得教練專長列表
+// GET /api/coaches/skill
 router.get(
   "/",
   catchAsync(async (req, res) => {
@@ -22,6 +24,8 @@ router.get(
   }),
 );
 
+// 新增教練專長
+// POST /api/coaches/skill
 router.post(
   "/",
   validate(createSkillSchema),
@@ -53,6 +57,8 @@ router.post(
   }),
 );
 
+// 刪除教練專長
+// DELETE /api/coaches/skill/:skillId
 router.delete(
   "/:skillId",
   validate(z.object({ skillId: z.string().uuid() }), "params"),
