@@ -24,7 +24,15 @@ router.get(
     const creditPackages = await dataSource
       .getRepository("CreditPackage")
       .find();
-    sendSuccess(res, { data: creditPackages, message: "查詢成功" });
+
+    const creditPackageList = creditPackages.map((creditPackage) => ({
+      id: creditPackage.id,
+      name: creditPackage.name,
+      credit_amount: creditPackage.credit_amount,
+      price: creditPackage.price,
+    }));
+
+    sendSuccess(res, { data: creditPackageList, message: "查詢成功" });
   }),
 );
 
@@ -37,12 +45,7 @@ router.post(
     const creditPackageRepo = dataSource.getRepository("CreditPackage");
     const { name } = req.body;
 
-    const existingCreditPackage = await creditPackageRepo.findOne({
-      select: ["name"],
-      where: {
-        name,
-      },
-    });
+    const existingCreditPackage = await creditPackageRepo.findOneBy({ name });
 
     if (existingCreditPackage) {
       return next(Conflict("資料重複"));
@@ -73,11 +76,8 @@ router.delete(
     const creditPackageRepo = dataSource.getRepository("CreditPackage");
     const { creditPackageId } = req.params;
 
-    const existingCreditPackage = await creditPackageRepo.findOne({
-      select: ["id"],
-      where: {
-        id: creditPackageId,
-      },
+    const existingCreditPackage = await creditPackageRepo.findOneBy({
+      id: creditPackageId,
     });
 
     if (!existingCreditPackage) {

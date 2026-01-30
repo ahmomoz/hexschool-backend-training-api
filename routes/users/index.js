@@ -36,12 +36,7 @@ router.post(
     const userRepo = dataSource.getRepository("User");
     const { name, email, password } = req.body;
 
-    const existingUser = await userRepo.findOne({
-      select: ["email"],
-      where: {
-        email,
-      },
-    });
+    const existingUser = await userRepo.findOneBy({ email });
 
     if (existingUser) {
       return next(Conflict("Email 已被使用"));

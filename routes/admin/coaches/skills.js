@@ -20,7 +20,13 @@ router.get(
   "/",
   catchAsync(async (req, res) => {
     const skills = await dataSource.getRepository("Skill").find();
-    sendSuccess(res, { data: skills, message: "查詢成功" });
+
+    const skillList = skills.map((skill) => ({
+      id: skill.id,
+      name: skill.name,
+    }));
+
+    sendSuccess(res, { data: skillList, message: "查詢成功" });
   }),
 );
 
@@ -33,12 +39,7 @@ router.post(
     const skillRepo = dataSource.getRepository("Skill");
     const { name } = req.body;
 
-    const existingSkill = await skillRepo.findOne({
-      select: ["name"],
-      where: {
-        name,
-      },
-    });
+    const existingSkill = await skillRepo.findOneBy({ name });
 
     if (existingSkill) {
       return next(Conflict("資料重複"));
@@ -66,12 +67,7 @@ router.delete(
     const skillRepo = dataSource.getRepository("Skill");
     const { skillId } = req.params;
 
-    const existingSkill = await skillRepo.findOne({
-      select: ["id"],
-      where: {
-        id: skillId,
-      },
-    });
+    const existingSkill = await skillRepo.findOneBy({ id: skillId });
 
     if (!existingSkill) {
       return next(NotFound("找不到此技能"));
