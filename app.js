@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const pinoHttp = require("pino-http");
-const routes = require("./routes/index");
+const routes = require("@/routes/index");
 
 const logger = require("@/utils/logger")("App");
 const { NotFound } = require("@/errors");

@@ -1,7 +1,7 @@
 const { EntitySchema } = require("typeorm");
 
 module.exports = new EntitySchema({
-  name: "course",
+  name: "Course",
   tableName: "COURSE",
   columns: {
     id: {
@@ -10,15 +10,38 @@ module.exports = new EntitySchema({
       generated: "uuid",
       nullable: false,
     },
-    experience_years: {
-      type: "integer",
+    user_id: {
+      type: "uuid",
+      unique: false,
+      nullable: false,
+    },
+    skill_id: {
+      type: "uuid",
+      unique: false,
+      nullable: false,
+    },
+    name: {
+      type: "varchar",
+      length: 100,
       nullable: false,
     },
     description: {
       type: "text",
       nullable: false,
     },
-    profile_image_url: {
+    start_at: {
+      type: "timestamp",
+      nullable: false,
+    },
+    end_at: {
+      type: "timestamp",
+      nullable: false,
+    },
+    max_participants: {
+      type: "integer",
+      nullable: false,
+    },
+    meeting_url: {
       type: "varchar",
       length: 2048,
       nullable: true,
