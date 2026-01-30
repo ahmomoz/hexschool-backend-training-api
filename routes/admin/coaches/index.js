@@ -7,7 +7,7 @@ const { dataSource } = require("@/db/data-source");
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
-const { Conflict, NotFound } = require("@/errors");
+const { NotFound } = require("@/errors");
 const { validate } = require("@/middlewares/validate.middleware");
 
 const createCoachSchema = z.object({
@@ -79,6 +79,74 @@ router.post(
       },
       message: "新增成功",
       statusCode: HTTP_STATUS.CREATED,
+    });
+  }),
+);
+
+// 取得教練列表
+// GET /api/coaches/?per=?page=?
+router.get(
+  "/",
+  validate(
+    z.object({
+      per: z.coerce.number().int().min(1).default(10),
+      page: z.coerce.number().int().min(1).default(1),
+    }),
+    "query",
+  ),
+  catchAsync(async (req, res) => {
+    const coachRepo = dataSource.getRepository("Coach");
+    const { per, page } = req.query;
+
+    const [coaches] = await coachRepo.findAndCount({
+      skip: (page - 1) * per,
+      take: per,
+      relations: {
+        User: true,
+      },
+    });
+
+    const coachList = coaches.map((coach) => ({
+      id: coach.id,
+      name: coach.User?.name,
+    }));
+
+    sendSuccess(res, { data: coachList, message: "查詢成功" });
+  }),
+);
+
+// 取得教練詳細資訊
+// GET /api/coaches/:coachId
+router.get(
+  "/:coachId",
+  validate(z.object({ coachId: z.string().uuid() }), "params"),
+  catchAsync(async (req, res) => {
+    const coachRepo = dataSource.getRepository("Coach");
+
+    const { coachId } = req.params;
+
+    const existingCoach = await coachRepo.findOne({
+      where: {
+        id: coachId,
+      },
+      select: {
+        User: {
+          name: true,
+          role: true,
+        },
+      },
+      relations: ["User"],
+    });
+    if (!existingCoach) {
+      return next(NotFound("找不到該教練"));
+    }
+
+    const user = { ...existingCoach.User };
+    const coach = { ...existingCoach, User: undefined };
+
+    sendSuccess(res, {
+      data: { user: user, coach: coach },
+      message: "查詢成功",
     });
   }),
 );
