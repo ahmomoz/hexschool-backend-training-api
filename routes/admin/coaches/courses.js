@@ -96,6 +96,7 @@ router.post(
 // PUT /api/admin/coaches/courses/:courseId
 router.put(
   "/:courseId",
+  validate(z.object({ courseId: z.string().uuid() }), "params"),
   validate(putCourseSchema),
   catchAsync(async (req, res, next) => {
     const skillRepo = dataSource.getRepository("Skill");
