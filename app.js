@@ -2,13 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const pinoHttp = require("pino-http");
+const routes = require("./routes/index");
 
 const logger = require("@/utils/logger")("App");
-const creditPackageRouter = require("@/routes/creditPackage");
-const coachRouter = require("@/routes/admin/coaches");
-const skillRouter = require("@/routes/admin/coaches/skills");
-const userRouter = require("@/routes/users");
-
 const { NotFound } = require("@/errors");
 const { globalErrorHandler } = require("@/middlewares/error.middleware");
 
@@ -36,10 +32,7 @@ app.get("/healthcheck", (req, res) => {
 });
 
 // 業務路由
-app.use("/api/credit-package", creditPackageRouter);
-app.use("/api/admin/coaches/skill", skillRouter);
-app.use("/api/admin/coaches", coachRouter);
-app.use("/api/users", userRouter);
+app.use("/api", routes);
 
 // 處理「找不到路徑 (404)」的中間件
 app.all("*", (req, res, next) => {
