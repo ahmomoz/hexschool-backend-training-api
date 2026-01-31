@@ -49,9 +49,10 @@ router.post(
       name,
     });
     const createdSkill = await skillRepo.save(newSkill);
+    const skillResponse = await skillRepo.findOneBy({ id: createdSkill.id });
 
     sendSuccess(res, {
-      data: createdSkill,
+      data: skillResponse,
       message: "新增成功",
       statusCode: HTTP_STATUS.CREATED,
     });

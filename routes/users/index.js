@@ -9,6 +9,7 @@ const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
 const { Conflict } = require("@/errors");
 const { validate } = require("@/middlewares/validate.middleware");
+const { hashPassword } = require("@/utils/password");
 
 const userSchema = z.object({
   name: z
@@ -36,22 +37,31 @@ router.post(
     const userRepo = dataSource.getRepository("User");
     const { name, email, password } = req.body;
 
+    // 檢查 Email 是否衝突
     const existingUser = await userRepo.findOneBy({ email });
-
     if (existingUser) {
       return next(Conflict("Email 已被使用"));
     }
 
+    // 雜湊密碼
+    const hashedPassword = await hashPassword(password);
+
+    // 建立並存入資料庫
     const newSave = userRepo.create({
       name: name,
       email: email,
-      password: password,
+      password: hashedPassword,
       role: "USER",
     });
     const createdUser = await userRepo.save(newSave);
 
+    const userResponse = {
+      id: createdUser.id,
+      name: createdUser.name,
+    };
+
     sendSuccess(res, {
-      data: createdUser,
+      data: userResponse,
       message: "註冊成功",
       statusCode: HTTP_STATUS.CREATED,
     });

@@ -58,9 +58,12 @@ router.post(
     });
 
     const createdCreditPackage = await creditPackageRepo.save(newSave);
+    const creditPackageResponse = await creditPackageRepo.findOneBy({
+      id: createdCreditPackage.id,
+    });
 
     sendSuccess(res, {
-      data: createdCreditPackage,
+      data: creditPackageResponse,
       message: "新增成功",
       statusCode: HTTP_STATUS.CREATED,
     });
