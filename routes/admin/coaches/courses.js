@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const isCoach = require("@/middlewares/isCoach.middleware");
 const logger = require("@/utils/logger")("Skill");
 const { z } = require("zod");
 const { dataSource } = require("@/db/data-source");
@@ -37,6 +38,7 @@ const putCourseSchema = baseCourseSchema
 router.post(
   "/",
   validate(createCourseSchema),
+  isCoach,
   catchAsync(async (req, res, next) => {
     const userRepo = dataSource.getRepository("User");
     const skillRepo = dataSource.getRepository("Skill");
@@ -62,9 +64,6 @@ router.post(
 
     if (!existingUser) {
       return next(NotFound("使用者不存在"));
-    }
-    if (existingUser.role !== "COACH") {
-      return next(NotFound("使用者尚未成為教練"));
     }
     if (!existingSkill) {
       return next(NotFound("課程所需的技能不存在"));
@@ -98,6 +97,7 @@ router.put(
   "/:courseId",
   validate(z.object({ courseId: z.string().uuid() }), "params"),
   validate(putCourseSchema),
+  isCoach,
   catchAsync(async (req, res, next) => {
     const skillRepo = dataSource.getRepository("Skill");
     const courseRepo = dataSource.getRepository("Course");
