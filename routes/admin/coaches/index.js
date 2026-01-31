@@ -7,7 +7,7 @@ const { dataSource } = require("@/db/data-source");
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
-const { NotFound } = require("@/errors");
+const { Conflict, NotFound } = require("@/errors");
 const { validate } = require("@/middlewares/validate.middleware");
 
 const createCoachSchema = z.object({
@@ -47,6 +47,10 @@ router.post(
 
     if (!existingUser) {
       return next(NotFound("找不到使用者"));
+    }
+
+    if (existingUser.role === "COACH") {
+      return next(Conflict("使用者已經是教練"));
     }
 
     const newCoach = coachRepo.create({

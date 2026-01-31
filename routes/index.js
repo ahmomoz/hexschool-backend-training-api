@@ -18,6 +18,8 @@ const userRouter = require("@/routes/users");
 
 // --- 公開路由 (不需要登入) ---
 router.use("/credit-package", creditPackageRouter);
+
+// --- 公開與私有行為混合 (驗證控制在其路由裡) ---
 router.use("/users", userRouter);
 
 // --- 受保護路由 (統一加上 isAuth) ---
