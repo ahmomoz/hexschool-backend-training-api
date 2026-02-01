@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const config = require("@/config/index");
 const logger = require("@/utils/logger")("CreditPackage");
 const { z } = require("zod");
 const { dataSource } = require("@/db/data-source");
@@ -9,6 +10,12 @@ const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
 const { Conflict, NotFound } = require("@/errors");
 const { validate, validateId } = require("@/middlewares/validate.middleware");
+
+const isAuth = require("@/middlewares/auth.middleware")({
+  secret: config.get("secret").jwtSecret,
+  userRepository: dataSource.getRepository("User"),
+  logger,
+});
 
 const createCreditPackageSchema = z.object({
   name: z.string().min(1, "方案名稱為必填"),
@@ -46,7 +53,6 @@ router.post(
     const { name } = req.body;
 
     const existingCreditPackage = await creditPackageRepo.findOneBy({ name });
-
     if (existingCreditPackage) {
       return next(Conflict("資料重複"));
     }
@@ -82,7 +88,6 @@ router.delete(
     const existingCreditPackage = await creditPackageRepo.findOneBy({
       id: creditPackageId,
     });
-
     if (!existingCreditPackage) {
       return next(NotFound("找不到此方案"));
     }
@@ -90,6 +95,49 @@ router.delete(
     await creditPackageRepo.delete({ id: creditPackageId });
 
     sendSuccess(res, { message: "刪除成功" });
+  }),
+);
+
+// 使用者購買方案
+// POST /api/credit-package/:creditPackageId
+router.post(
+  "/:creditPackageId",
+  validateId("creditPackageId"),
+  isAuth,
+  catchAsync(async (req, res, next) => {
+    const creditPackageRepo = dataSource.getRepository("CreditPackage");
+    const creditPurchaseRepo = dataSource.getRepository("CreditPurchase");
+
+    const { id } = req.user;
+    const { creditPackageId } = req.params;
+
+    const creditPackage = await creditPackageRepo.findOne({
+      where: {
+        id: creditPackageId,
+      },
+      select: {
+        credit_amount: true,
+        price: true,
+      },
+    });
+    if (!creditPackage) {
+      return next(NotFound("找不到此方案"));
+    }
+
+    const newPurchase = creditPurchaseRepo.create({
+      user_id: id,
+      credit_package_id: creditPackageId,
+      purchased_credits: creditPackage.credit_amount,
+      price_paid: creditPackage.price,
+      purchaseAt: new Date().toISOString(),
+    });
+
+    await creditPurchaseRepo.save(newPurchase);
+
+    sendSuccess(res, {
+      message: "購買成功",
+      statusCode: HTTP_STATUS.CREATED,
+    });
   }),
 );
 
