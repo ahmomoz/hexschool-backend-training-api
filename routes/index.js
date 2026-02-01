@@ -16,6 +16,7 @@ const courseRouter = require("@/routes/courses");
 const adminSkillRouter = require("@/routes/admin/coaches/skills");
 const adminCourseRouter = require("@/routes/admin/coaches/courses");
 const adminCoachRouter = require("@/routes/admin/coaches");
+const uploadRouter = require("@/routes/upload");
 
 // --- 公開路由 (不需要登入) ---
 router.use("/credit-package", creditPackageRouter);
@@ -31,5 +32,7 @@ router.use("/admin", isAuth);
 router.use("/admin/coaches/skill", adminSkillRouter);
 router.use("/admin/coaches/courses", adminCourseRouter);
 router.use("/admin/coaches", adminCoachRouter);
+
+router.use("/upload", uploadRouter);
 
 module.exports = router;
