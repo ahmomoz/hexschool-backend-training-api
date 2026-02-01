@@ -7,7 +7,7 @@ const { dataSource } = require("@/db/data-source");
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
-const { Conflict, NotFound } = require("@/errors");
+const { Conflict, BadRequest } = require("@/errors");
 const { validate, validateId } = require("@/middlewares/validate.middleware");
 
 const createSkillSchema = z.object({
@@ -71,7 +71,7 @@ router.delete(
     const existingSkill = await skillRepo.findOneBy({ id: skillId });
 
     if (!existingSkill) {
-      return next(NotFound("找不到此技能"));
+      return next(BadRequest("找不到此技能"));
     }
 
     await skillRepo.delete({ id: skillId });

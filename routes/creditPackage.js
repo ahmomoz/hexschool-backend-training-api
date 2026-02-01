@@ -8,7 +8,7 @@ const { dataSource } = require("@/db/data-source");
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
-const { Conflict, NotFound } = require("@/errors");
+const { Conflict, BadRequest } = require("@/errors");
 const { validate, validateId } = require("@/middlewares/validate.middleware");
 
 const isAuth = require("@/middlewares/auth.middleware")({
@@ -89,7 +89,7 @@ router.delete(
       id: creditPackageId,
     });
     if (!existingCreditPackage) {
-      return next(NotFound("找不到此方案"));
+      return next(BadRequest("找不到此方案"));
     }
 
     await creditPackageRepo.delete({ id: creditPackageId });
@@ -121,7 +121,7 @@ router.post(
       },
     });
     if (!creditPackage) {
-      return next(NotFound("找不到此方案"));
+      return next(BadRequest("找不到此方案"));
     }
 
     const newPurchase = creditPurchaseRepo.create({

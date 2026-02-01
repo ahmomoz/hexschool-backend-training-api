@@ -9,7 +9,7 @@ const { dataSource } = require("@/db/data-source");
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
-const { NotFound } = require("@/errors");
+const { BadRequest } = require("@/errors");
 const { validate, validateId } = require("@/middlewares/validate.middleware");
 
 const isAuth = require("@/middlewares/auth.middleware")({
@@ -74,7 +74,7 @@ router.post(
     // 找不到課程
     const course = await courseRepo.findOneBy({ id: courseId });
     if (!course) {
-      return next(NotFound("找不到此課程"));
+      return next(BadRequest("找不到此課程"));
     }
 
     // 已報名過此課程
@@ -83,7 +83,7 @@ router.post(
       course_id: courseId,
     });
     if (isBooking) {
-      return next(NotFound("已經報名過此課程"));
+      return next(BadRequest("已經報名過此課程"));
     }
 
     // 使用者購買的方案擁有的堂數
@@ -106,9 +106,9 @@ router.post(
     });
 
     if (userUsedCredit >= userCredit) {
-      return next(NotFound("已無可使用堂數"));
+      return next(BadRequest("已無可使用堂數"));
     } else if (courseBookingCount >= course.max_participants) {
-      return next(NotFound("已達最大參加人數，無法參加"));
+      return next(BadRequest("已達最大參加人數，無法參加"));
     }
 
     const newCourseBooking = courseBookingRepo.create({
@@ -147,7 +147,7 @@ router.delete(
       },
     });
     if (!userCourseBooking) {
-      return next(NotFound("課程不存在或已被取消"));
+      return next(BadRequest("課程不存在或已被取消"));
     }
 
     await courseBookingRepo.update(

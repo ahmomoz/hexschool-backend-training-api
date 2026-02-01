@@ -8,7 +8,7 @@ const { dataSource } = require("@/db/data-source");
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
-const { NotFound } = require("@/errors");
+const { BadRequest } = require("@/errors");
 const { validate, validateId } = require("@/middlewares/validate.middleware");
 
 const baseCourseSchema = z.object({
@@ -63,10 +63,10 @@ router.post(
     const existingSkill = await skillRepo.findOneBy({ id: skill_id });
 
     if (!existingUser) {
-      return next(NotFound("使用者不存在"));
+      return next(BadRequest("使用者不存在"));
     }
     if (!existingSkill) {
-      return next(NotFound("課程所需的技能不存在"));
+      return next(BadRequest("課程所需的技能不存在"));
     }
 
     const newCourse = courseRepo.create({
@@ -105,7 +105,7 @@ router.put(
     const { courseId } = req.params;
     const existingCourse = await courseRepo.findOneBy({ id: courseId });
     if (!existingCourse) {
-      return next(NotFound("課程不存在"));
+      return next(BadRequest("課程不存在"));
     }
 
     const {
@@ -121,7 +121,7 @@ router.put(
     const existingSkill = await skillRepo.findOneBy({ id: skill_id });
 
     if (!existingSkill) {
-      return next(NotFound("課程所需的技能不存在"));
+      return next(BadRequest("課程所需的技能不存在"));
     }
 
     await courseRepo.update(

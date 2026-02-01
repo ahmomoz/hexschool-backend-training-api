@@ -7,7 +7,7 @@ const { dataSource } = require("@/db/data-source");
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
-const { Conflict, NotFound } = require("@/errors");
+const { Conflict, BadRequest } = require("@/errors");
 const { validate, validateId } = require("@/middlewares/validate.middleware");
 
 const createCoachSchema = z.object({
@@ -46,7 +46,7 @@ router.post(
     });
 
     if (!existingUser) {
-      return next(NotFound("找不到使用者"));
+      return next(BadRequest("找不到使用者"));
     }
 
     if (existingUser.role === "COACH") {
@@ -142,7 +142,7 @@ router.get(
       relations: ["User"],
     });
     if (!existingCoach) {
-      return next(NotFound("找不到該教練"));
+      return next(BadRequest("找不到該教練"));
     }
 
     const user = { ...existingCoach.User };

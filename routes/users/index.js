@@ -9,7 +9,7 @@ const { dataSource } = require("@/db/data-source");
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
-const { Conflict, NotFound } = require("@/errors");
+const { Conflict, BadRequest } = require("@/errors");
 const { validate } = require("@/middlewares/validate.middleware");
 const { hashPassword, comparePassword } = require("@/utils/password");
 
@@ -99,7 +99,7 @@ router.post(
       existingUser.password,
     );
     if (!existingUser || !isPasswordMatch) {
-      return next(NotFound("使用者不存在或密碼輸入錯誤"));
+      return next(BadRequest("使用者不存在或密碼輸入錯誤"));
     }
 
     // 產生 JWT Token
