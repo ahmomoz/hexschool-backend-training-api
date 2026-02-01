@@ -9,7 +9,7 @@ const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
 const { NotFound } = require("@/errors");
-const { validate } = require("@/middlewares/validate.middleware");
+const { validate, validateId } = require("@/middlewares/validate.middleware");
 
 const baseCourseSchema = z.object({
   user_id: z.string().uuid("無效的使用者 ID 格式"),
@@ -95,7 +95,7 @@ router.post(
 // PUT /api/admin/coaches/courses/:courseId
 router.put(
   "/:courseId",
-  validate(z.object({ courseId: z.string().uuid() }), "params"),
+  validateId("courseId"),
   validate(putCourseSchema),
   isCoach,
   catchAsync(async (req, res, next) => {

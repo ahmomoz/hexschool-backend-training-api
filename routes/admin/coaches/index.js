@@ -8,7 +8,7 @@ const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
 const { Conflict, NotFound } = require("@/errors");
-const { validate } = require("@/middlewares/validate.middleware");
+const { validate, validateId } = require("@/middlewares/validate.middleware");
 
 const createCoachSchema = z.object({
   experience_years: z.number().int("教練年資必須是整數"),
@@ -123,7 +123,7 @@ router.get(
 // GET /api/coaches/:coachId
 router.get(
   "/:coachId",
-  validate(z.object({ coachId: z.string().uuid() }), "params"),
+  validateId("coachId"),
   catchAsync(async (req, res) => {
     const coachRepo = dataSource.getRepository("Coach");
 

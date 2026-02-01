@@ -8,7 +8,7 @@ const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
 const { Conflict, NotFound } = require("@/errors");
-const { validate } = require("@/middlewares/validate.middleware");
+const { validate, validateId } = require("@/middlewares/validate.middleware");
 
 const createCreditPackageSchema = z.object({
   name: z.string().min(1, "方案名稱為必填"),
@@ -74,7 +74,7 @@ router.post(
 // DELETE /api/credit-package/:creditPackageId
 router.delete(
   "/:creditPackageId",
-  validate(z.object({ creditPackageId: z.string().uuid() }), "params"),
+  validateId("creditPackageId"),
   catchAsync(async (req, res, next) => {
     const creditPackageRepo = dataSource.getRepository("CreditPackage");
     const { creditPackageId } = req.params;

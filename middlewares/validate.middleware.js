@@ -1,3 +1,4 @@
+const { z } = require("zod");
 const { BadRequest } = require("@/errors");
 
 const validate =
@@ -19,4 +20,15 @@ const validate =
     }
   };
 
-module.exports = { validate };
+/**
+ * 驗證 params 中的 UUID 參數
+ * @param {string} paramName - 參數名稱，例如 "userId", "coachId"
+ */
+const validateId = (paramName) => {
+  const schema = z.object({
+    [paramName]: z.string().uuid(`${paramName} 格式不正確`),
+  });
+  return validate(schema, "params");
+};
+
+module.exports = { validate, validateId };

@@ -8,7 +8,7 @@ const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
 const { Conflict, NotFound } = require("@/errors");
-const { validate } = require("@/middlewares/validate.middleware");
+const { validate, validateId } = require("@/middlewares/validate.middleware");
 
 const createSkillSchema = z.object({
   name: z.string().min(1, "技能名稱為必填"),
@@ -63,7 +63,7 @@ router.post(
 // DELETE /api/coaches/skill/:skillId
 router.delete(
   "/:skillId",
-  validate(z.object({ skillId: z.string().uuid() }), "params"),
+  validateId("skillId"),
   catchAsync(async (req, res, next) => {
     const skillRepo = dataSource.getRepository("Skill");
     const { skillId } = req.params;
