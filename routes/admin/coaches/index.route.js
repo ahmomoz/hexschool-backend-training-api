@@ -41,7 +41,7 @@ router.get(
 router.get(
   "/:coachId",
   validate(coachIdSchema, "params"),
-  coachController.getCoach,
+  coachController.getCoachById,
 );
 
 module.exports = router;
