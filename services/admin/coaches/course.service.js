@@ -6,90 +6,61 @@ const skillRepo = dataSource.getRepository("Skill");
 const courseRepo = dataSource.getRepository("Course");
 
 const courseService = {
-  // 新增課程
+  /**
+   * 新增課程
+   * @param {Object} courseData
+   */
   async createCourse(courseData) {
-    const {
-      user_id,
-      skill_id,
-      name,
-      description,
-      start_at,
-      end_at,
-      max_participants,
-      meeting_url,
-    } = courseData;
+    const { user_id, skill_id, ...otherDetails } = courseData;
 
-    const existingUser = await userRepo.findOne({
-      select: ["id", "role"],
-      where: {
-        id: user_id,
-      },
-    });
-    const existingSkill = await skillRepo.findOneBy({ id: skill_id });
+    // 並行檢查 (效能優化：同時查詢使用者與技能)
+    const [existingUser, existingSkill] = await Promise.all([
+      userRepo.findOne({ select: ["id"], where: { id: user_id } }),
+      skillRepo.findOne({ select: ["id"], where: { id: skill_id } }),
+    ]);
 
     if (!existingUser) throw BadRequest("使用者不存在");
     if (!existingSkill) throw BadRequest("課程所需的技能不存在");
 
+    // 建立實體並儲存
     const newCourse = courseRepo.create({
       user_id,
       skill_id,
-      name,
-      description,
-      start_at,
-      end_at,
-      max_participants,
-      meeting_url,
+      ...otherDetails,
     });
-    const createdCourse = await courseRepo.save(newCourse);
+
+    const savedCourse = await courseRepo.save(newCourse);
+
+    // 調整順序
+    const { id, ...rest } = savedCourse;
+
     return {
-      id: createdCourse.id,
-      user_id: createdCourse.user_id,
-      skill_id: createdCourse.skill_id,
-      name: createdCourse.name,
-      description: createdCourse.description,
-      start_at: createdCourse.start_at,
-      end_at: createdCourse.end_at,
-      max_participants: createdCourse.max_participants,
-      meeting_url: createdCourse.meeting_url,
-      created_at: createdCourse.created_at,
-      update_at: createdCourse.update_at,
+      id,
+      ...rest,
     };
   },
 
-  // 更新課程
-  async updateCourse(courseId, courseData) {
-    const {
-      skill_id,
-      name,
-      description,
-      start_at,
-      end_at,
-      max_participants,
-      meeting_url,
-    } = courseData;
+  /**
+   * 更新課程
+   * @param {string|number} courseId
+   * @param {Object} updateData
+   */
+  async updateCourse(courseId, updateData) {
+    const { skill_id } = updateData;
 
     const existingCourse = await courseRepo.findOneBy({ id: courseId });
     if (!existingCourse) throw BadRequest("課程不存在");
 
-    const existingSkill = await skillRepo.findOneBy({ id: skill_id });
-    if (!existingSkill) throw BadRequest("課程所需的技能不存在");
+    if (skill_id) {
+      const existingSkill = await skillRepo.findOneBy({ id: skill_id });
+      if (!existingSkill) throw BadRequest("更新的技能不存在");
+    }
 
-    await courseRepo.update(
-      { id: courseId },
-      {
-        skill_id,
-        name,
-        description,
-        start_at,
-        end_at,
-        max_participants,
-        meeting_url,
-      },
-    );
+    // 執行更新並合併資料 (merge 會將新資料蓋過舊資料，但不存入 DB)
+    const updatedCourse = courseRepo.merge(existingCourse, updateData);
 
-    const updateCourse = await courseRepo.findOneBy({ id: courseId });
-
-    return updateCourse;
+    // 儲存並回傳 (save 會自動處理 updated_at)
+    return await courseRepo.save(updatedCourse);
   },
 };
 
