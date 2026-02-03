@@ -1,7 +1,5 @@
 const courseService = require("@/services/courses.service");
 
-const logger = require("@/utils/logger")("Course");
-
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");

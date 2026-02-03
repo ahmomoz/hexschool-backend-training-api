@@ -1,3 +1,5 @@
+const adminCoachController = require("@/controllers/admin/coaches");
+
 const express = require("express");
 const router = express.Router();
 const logger = require("@/utils/logger")("Coach");
@@ -10,8 +12,6 @@ const {
   createCoachSchema,
   coachIdSchema,
 } = require("@/validations/coach.schema");
-
-const adminCoachController = require("@/controllers/admin/coaches");
 
 // 將使用者新增為教練
 // POST /api/admin/coaches/:userId

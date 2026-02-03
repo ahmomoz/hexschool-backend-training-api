@@ -2,18 +2,20 @@ const courseController = require("@/controllers/courses.controller");
 
 const express = require("express");
 const router = express.Router();
-const config = require("@/config/index");
 const logger = require("@/utils/logger")("Course");
 
 const { z } = require("zod");
 const { dataSource } = require("@/db/data-source");
-const { validate, validateId } = require("@/middlewares/validate.middleware");
+const { validate } = require("@/middlewares/validate.middleware");
 
+const config = require("@/config/index");
 const isAuth = require("@/middlewares/auth.middleware")({
   secret: config.get("secret").jwtSecret,
   userRepository: dataSource.getRepository("User"),
   logger,
 });
+
+const { courseIdSchema } = require("@/validations/course.schema");
 
 // 取得課程列表
 // GET /api/courses/?per=?page=?
@@ -33,7 +35,7 @@ router.get(
 // POST /api/courses/:courseId
 router.post(
   "/:courseId",
-  validateId("courseId"),
+  validate(courseIdSchema, "params"),
   isAuth,
   courseController.createCourse,
 );
@@ -42,7 +44,7 @@ router.post(
 // DELETE /api/courses/:courseId
 router.delete(
   "/:courseId",
-  validateId("courseId"),
+  validate(courseIdSchema, "params"),
   isAuth,
   courseController.deleteCourse,
 );

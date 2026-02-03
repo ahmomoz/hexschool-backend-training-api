@@ -1,17 +1,18 @@
+const adminCourseController = require("@/controllers/admin/coaches/course.controller");
+
 const express = require("express");
 const router = express.Router();
-const isCoach = require("@/middlewares/isCoach.middleware");
-const logger = require("@/utils/logger")("Skill");
+const logger = require("@/utils/logger")("Course");
 
 const { validate } = require("@/middlewares/validate.middleware");
+
+const isCoach = require("@/middlewares/isCoach.middleware");
 
 const {
   createCourseSchema,
   putCourseSchema,
   courseIdSchema,
 } = require("@/validations/course.schema");
-
-const adminCourseController = require("@/controllers/admin/coaches/course.controller");
 
 // 新增教練課程資料
 // POST /api/admin/coaches/courses

@@ -1,5 +1,3 @@
-const logger = require("@/utils/logger")("Course");
-
 const { IsNull } = require("typeorm");
 const { dataSource } = require("@/db/data-source");
 const { BadRequest } = require("@/errors");

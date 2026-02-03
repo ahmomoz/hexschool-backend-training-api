@@ -1,3 +1,5 @@
+const adminSkillController = require("@/controllers/admin/coaches/skill.controller");
+
 const express = require("express");
 const router = express.Router();
 const logger = require("@/utils/logger")("Skill");
@@ -8,8 +10,6 @@ const {
   createSkillSchema,
   skillIdSchema,
 } = require("@/validations/skill.schema");
-
-const adminSkillController = require("@/controllers/admin/coaches/skill.controller");
 
 // 取得教練專長列表
 // GET /api/admin/coaches/skill

@@ -1,24 +1,24 @@
+const userController = require("@/controllers/users");
+
 const express = require("express");
 const router = express.Router();
-const config = require("@/config/index");
 const logger = require("@/utils/logger")("User");
 
 const { dataSource } = require("@/db/data-source");
 const { validate } = require("@/middlewares/validate.middleware");
+
+const config = require("@/config/index");
+const isAuth = require("@/middlewares/auth.middleware")({
+  secret: config.get("secret").jwtSecret,
+  userRepository: dataSource.getRepository("User"),
+  logger,
+});
 
 const {
   baseUserSchema,
   loginUserSchema,
   putUserSchema,
 } = require("@/validations/user.schema");
-
-const userController = require("@/controllers/users");
-
-const isAuth = require("@/middlewares/auth.middleware")({
-  secret: config.get("secret").jwtSecret,
-  userRepository: dataSource.getRepository("User"),
-  logger,
-});
 
 // 使用者註冊
 // POST /api/users/signup
