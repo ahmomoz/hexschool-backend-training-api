@@ -3,7 +3,7 @@ const { Conflict, BadRequest } = require("@/errors");
 
 const skillRepo = dataSource.getRepository("Skill");
 
-const skillService = {
+const adminSkillService = {
   /**
    * 取得技能列表
    * 透過 select 限制欄位，避免在記憶體中使用 map 處理大量資料
@@ -48,4 +48,4 @@ const skillService = {
   },
 };
 
-module.exports = skillService;
+module.exports = adminSkillService;

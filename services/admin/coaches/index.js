@@ -4,7 +4,7 @@ const { Conflict, BadRequest } = require("@/errors");
 const userRepo = dataSource.getRepository("User");
 const coachRepo = dataSource.getRepository("Coach");
 
-const coachService = {
+const adminCoachService = {
   /**
    * 將使用者新增為教練 (包含 Transaction 處理)
    * @param {Object} coachData
@@ -116,4 +116,4 @@ const coachService = {
   },
 };
 
-module.exports = coachService;
+module.exports = adminCoachService;

@@ -11,7 +11,7 @@ const {
   courseIdSchema,
 } = require("@/validations/course.schema");
 
-const courseController = require("@/controllers/admin/coaches/course.controller");
+const adminCourseController = require("@/controllers/admin/coaches/course.controller");
 
 // 新增教練課程資料
 // POST /api/admin/coaches/courses
@@ -19,7 +19,7 @@ router.post(
   "/",
   validate(createCourseSchema),
   isCoach,
-  courseController.createCourse,
+  adminCourseController.createCourse,
 );
 
 // 編輯教練課程資料
@@ -29,7 +29,7 @@ router.put(
   validate(courseIdSchema, "params"),
   validate(putCourseSchema),
   isCoach,
-  courseController.updateCourse,
+  adminCourseController.updateCourse,
 );
 
 module.exports = router;

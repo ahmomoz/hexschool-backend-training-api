@@ -1,18 +1,18 @@
-const skillService = require("@/services/admin/coaches/skill.service");
+const adminSkillService = require("@/services/admin/coaches/skill.service");
 
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
 
-const skillController = {
+const adminSkillController = {
   getSkills: catchAsync(async (req, res) => {
-    const data = await skillService.getSkillList();
+    const data = await adminSkillService.getSkillList();
     sendSuccess(res, { data, message: "查詢成功" });
   }),
 
   createSkill: catchAsync(async (req, res) => {
     const { name } = req.body;
-    const data = await skillService.createSkill(name);
+    const data = await adminSkillService.createSkill(name);
     sendSuccess(res, {
       data,
       message: "新增成功",
@@ -22,9 +22,9 @@ const skillController = {
 
   deleteSkill: catchAsync(async (req, res) => {
     const { skillId } = req.params;
-    await skillService.deleteSkill(skillId);
+    await adminSkillService.deleteSkill(skillId);
     sendSuccess(res, { message: "刪除成功" });
   }),
 };
 
-module.exports = skillController;
+module.exports = adminSkillController;

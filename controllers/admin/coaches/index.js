@@ -1,15 +1,15 @@
-const coachService = require("@/services/admin/coaches");
+const adminCoachService = require("@/services/admin/coaches");
 
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
 
-const coachController = {
+const adminCoachController = {
   // 將使用者新增為教練
   createCoach: catchAsync(async (req, res, next) => {
     const { userId } = req.params;
     const coachData = req.body;
-    const savedData = await coachService.createCoach(userId, coachData);
+    const savedData = await adminCoachService.createCoach(userId, coachData);
 
     sendSuccess(res, {
       data: savedData,
@@ -22,7 +22,7 @@ const coachController = {
   getCoachList: catchAsync(async (req, res) => {
     const { per, page } = req.query;
 
-    const coachList = await coachService.getCoachList(per, page);
+    const coachList = await adminCoachService.getCoachList(per, page);
 
     sendSuccess(res, { data: coachList, message: "查詢成功" });
   }),
@@ -31,7 +31,7 @@ const coachController = {
   getCoachById: catchAsync(async (req, res) => {
     const { coachId } = req.params;
 
-    const data = await coachService.getCoachById(coachId);
+    const data = await adminCoachService.getCoachById(coachId);
 
     sendSuccess(res, {
       data: data,
@@ -40,4 +40,4 @@ const coachController = {
   }),
 };
 
-module.exports = coachController;
+module.exports = adminCoachController;

@@ -1,13 +1,13 @@
-const courseService = require("@/services/admin/coaches/course.service");
+const adminCourseService = require("@/services/admin/coaches/course.service");
 
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
 
-const courseController = {
+const adminCourseController = {
   createCourse: catchAsync(async (req, res, next) => {
     const courseData = req.body;
-    const createdData = await courseService.createCourse(courseData);
+    const createdData = await adminCourseService.createCourse(courseData);
 
     sendSuccess(res, {
       data: createdData,
@@ -20,7 +20,7 @@ const courseController = {
     const { courseId } = req.params;
     const courseData = req.body;
 
-    const updatedCourse = await courseService.updateCourse(
+    const updatedCourse = await adminCourseService.updateCourse(
       courseId,
       courseData,
     );
@@ -33,4 +33,4 @@ const courseController = {
   }),
 };
 
-module.exports = courseController;
+module.exports = adminCourseController;

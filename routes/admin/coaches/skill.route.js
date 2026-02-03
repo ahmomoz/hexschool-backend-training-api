@@ -9,22 +9,22 @@ const {
   skillIdSchema,
 } = require("@/validations/skill.schema");
 
-const skillController = require("@/controllers/admin/coaches/skill.controller");
+const adminSkillController = require("@/controllers/admin/coaches/skill.controller");
 
 // 取得教練專長列表
 // GET /api/admin/coaches/skill
-router.get("/", skillController.getSkills);
+router.get("/", adminSkillController.getSkills);
 
 // 新增教練專長
 // POST /api/admin/coaches/skill
-router.post("/", validate(createSkillSchema), skillController.createSkill);
+router.post("/", validate(createSkillSchema), adminSkillController.createSkill);
 
 // 刪除教練專長
 // DELETE /api/admin/coaches/skill/:skillId
 router.delete(
   "/:skillId",
   validate(skillIdSchema, "params"),
-  skillController.deleteSkill,
+  adminSkillController.deleteSkill,
 );
 
 module.exports = router;

@@ -11,7 +11,7 @@ const {
   coachIdSchema,
 } = require("@/validations/coach.schema");
 
-const coachController = require("@/controllers/admin/coaches");
+const adminCoachController = require("@/controllers/admin/coaches");
 
 // 將使用者新增為教練
 // POST /api/admin/coaches/:userId
@@ -19,7 +19,7 @@ router.post(
   "/:userId",
   validate(createCoachSchema),
   validate(userIdSchema, "params"),
-  coachController.createCoach,
+  adminCoachController.createCoach,
 );
 
 // 取得教練列表
@@ -33,7 +33,7 @@ router.get(
     }),
     "query",
   ),
-  coachController.getCoachList,
+  adminCoachController.getCoachList,
 );
 
 // 取得教練詳細資訊
@@ -41,7 +41,7 @@ router.get(
 router.get(
   "/:coachId",
   validate(coachIdSchema, "params"),
-  coachController.getCoachById,
+  adminCoachController.getCoachById,
 );
 
 module.exports = router;

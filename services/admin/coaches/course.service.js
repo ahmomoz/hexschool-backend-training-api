@@ -5,7 +5,7 @@ const userRepo = dataSource.getRepository("User");
 const skillRepo = dataSource.getRepository("Skill");
 const courseRepo = dataSource.getRepository("Course");
 
-const courseService = {
+const adminCourseService = {
   /**
    * 新增課程
    * @param {Object} courseData
@@ -64,4 +64,4 @@ const courseService = {
   },
 };
 
-module.exports = courseService;
+module.exports = adminCourseService;
