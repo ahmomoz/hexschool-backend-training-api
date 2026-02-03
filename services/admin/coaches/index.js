@@ -83,7 +83,7 @@ const adminCoachService = {
    * @param {string} coachId 教練 ID
    * @returns {Promise<Object>} 教練詳細資訊 (包含使用者資訊)
    */
-  async getCoachById(coachId) {
+  async getCoaches(coachId) {
     const coach = await coachRepo.findOne({
       where: { id: coachId },
       relations: {

@@ -28,10 +28,10 @@ const adminCoachController = {
   }),
 
   // 取得教練詳細
-  getCoachById: catchAsync(async (req, res) => {
+  getCoaches: catchAsync(async (req, res) => {
     const { coachId } = req.params;
 
-    const data = await adminCoachService.getCoachById(coachId);
+    const data = await adminCoachService.getCoaches(coachId);
 
     sendSuccess(res, {
       data: data,
