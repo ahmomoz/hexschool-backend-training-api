@@ -15,7 +15,7 @@ const userRouter = require("@/routes/users");
 const courseRouter = require("@/routes/courses");
 const adminSkillRouter = require("@/routes/admin/coaches/skill.route");
 const adminCourseRouter = require("@/routes/admin/coaches/courses.route");
-const adminCoachRouter = require("@/routes/admin/coaches/index.route");
+const adminCoachRouter = require("@/routes/admin/coaches");
 const uploadRouter = require("@/routes/upload");
 
 // --- 公開路由 (不需要登入) ---

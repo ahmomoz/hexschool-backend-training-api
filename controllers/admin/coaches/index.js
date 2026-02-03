@@ -1,4 +1,4 @@
-const coachService = require("@/services/admin/coaches/index.service");
+const coachService = require("@/services/admin/coaches");
 
 const { catchAsync } = require("@/utils/catchAsync");
 const { sendSuccess } = require("@/utils/response");

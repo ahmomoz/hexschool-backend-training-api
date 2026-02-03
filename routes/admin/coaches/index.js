@@ -11,7 +11,7 @@ const {
   coachIdSchema,
 } = require("@/validations/coach.schema");
 
-const coachController = require("@/controllers/admin/coaches/index.controller");
+const coachController = require("@/controllers/admin/coaches");
 
 // 將使用者新增為教練
 // POST /api/admin/coaches/:userId
