@@ -13,7 +13,7 @@ const isAuth = require("@/middlewares/auth.middleware")({
 
 const creditPackageRouter = require("@/routes/creditPackage");
 const userRouter = require("@/routes/users");
-const courseRouter = require("@/routes/courses");
+const courseRouter = require("@/routes/courses.route");
 const adminSkillRouter = require("@/routes/admin/coaches/skill.route");
 const adminCourseRouter = require("@/routes/admin/coaches/courses.route");
 const adminCoachRouter = require("@/routes/admin/coaches");
