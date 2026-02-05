@@ -27,6 +27,17 @@ const userController = {
     });
   }),
 
+  updatePassword: catchAsync(async (req, res, next) => {
+    const { id } = req.user;
+    const passwordData = req.body;
+    await userService.updatePassword(id, passwordData);
+
+    sendSuccess(res, {
+      message: "密碼更新成功",
+      statusCode: HTTP_STATUS.OK,
+    });
+  }),
+
   getProfile: catchAsync(async (req, res, next) => {
     const { id } = req.user;
     const responseUser = await userService.getProfile(id);
@@ -46,6 +57,17 @@ const userController = {
 
     sendSuccess(res, {
       message: "更新成功",
+      statusCode: HTTP_STATUS.OK,
+    });
+  }),
+
+  getCreditPackage: catchAsync(async (req, res, next) => {
+    const { id } = req.user;
+    const userPurchaseCreditPackage = await userService.getCreditPackage(id);
+
+    sendSuccess(res, {
+      data: userPurchaseCreditPackage,
+      message: "查詢成功",
       statusCode: HTTP_STATUS.OK,
     });
   }),

@@ -6,6 +6,7 @@ const { Conflict, BadRequest } = require("@/errors");
 const { hashPassword, comparePassword } = require("@/utils/password");
 
 const userRepo = dataSource.getRepository("User");
+const creditPurchaseRepo = dataSource.getRepository("CreditPurchase");
 
 const userService = {
   /**
@@ -84,6 +85,40 @@ const userService = {
   },
 
   /**
+   * @description 使用者更新密碼
+   * @param {object} passwordData - 密碼資料
+   * @param {string} passwordData.password - 使用者密碼
+   * @param {string} passwordData.new_password - 使用者新密碼
+   * @param {string} passwordData.confirm_new_password - 使用者確認密碼
+   */
+  async updatePassword(userId, passwordData) {
+    const { password, new_password } = passwordData;
+
+    // 尋找使用者（抓取 password 欄位進行比對）
+    const user = await userRepo.findOne({
+      where: { id: userId },
+      select: ["id", "password"],
+    });
+
+    // 無論使用者是否存在，都進行一次密碼比對動作（防止計時攻擊）
+    const isPasswordMatch = user
+      ? await comparePassword(password, user.password)
+      : false;
+    if (!user || !isPasswordMatch)
+      throw BadRequest("使用者不存在或密碼輸入錯誤");
+
+    const isPasswordConflict = await comparePassword(
+      new_password,
+      user.password,
+    );
+    if (isPasswordConflict) throw BadRequest("新密碼不能與舊密碼相同");
+
+    const hashedNewPassword = await hashPassword(new_password);
+
+    await userRepo.update({ id: userId }, { password: hashedNewPassword });
+  },
+
+  /**
    * @description 根據 ID 取得使用者個人資料
    * @param {string} userId - 使用者 ID
    * @returns {Promise<object>} 包含使用者名稱和 Email 的物件
@@ -110,6 +145,37 @@ const userService = {
     const updateResult = await userRepo.update({ id: userId }, { name });
 
     if (updateResult.affected === 0) throw BadRequest("找不到該使用者");
+  },
+
+  /**
+   * @description 取得使用者已購買的方案列表
+   * @param {string} userId - 使用者 ID
+   * @returns {Promise<object>} 包含使用者已購買的方案列表物件
+   */
+  async getCreditPackage(userId) {
+    const creditPurchase = await creditPurchaseRepo.find({
+      relations: {
+        CreditPackage: true,
+      },
+      select: {
+        purchased_credits: true,
+        price_paid: true,
+        purchaseAt: true,
+        CreditPackage: {
+          name: true,
+        },
+      },
+      where: {
+        user_id: userId,
+      },
+    });
+
+    return creditPurchase.map((item) => ({
+      purchased_credits: item.purchased_credits,
+      price_paid: item.price_paid,
+      name: item.CreditPackage.name,
+      purchase_at: item.purchaseAt,
+    }));
   },
 };
 

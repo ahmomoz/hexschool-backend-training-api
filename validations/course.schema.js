@@ -10,7 +10,9 @@ const baseCourseSchema = z.object({
   max_participants: z.number().min(1, "最大上課人數為必填"),
   meeting_url: z.string().url("線上直播網址格式需為網址").optional(),
 });
+
 const createCourseSchema = baseCourseSchema;
+
 const putCourseSchema = baseCourseSchema
   .omit({
     user_id: true,

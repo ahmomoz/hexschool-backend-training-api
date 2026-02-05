@@ -21,10 +21,29 @@ const loginUserSchema = baseUserSchema.omit({
   name: true,
 });
 
-const putUserSchema = baseUserSchema.pick({
+const updateUserPasswordSchema = baseUserSchema
+  .pick({
+    password: true,
+  })
+  .extend({
+    new_password: z
+      .string()
+      .min(8, "新密碼最短需 8 個字")
+      .max(16, "新密碼最長 16 個字")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        "新密碼必須包含英文大小寫及數字",
+      ),
+    confirm_new_password: z.string(),
+  })
+  .refine((data) => data.new_password === data.confirm_new_password, {
+    message: "新密碼與驗證新密碼不一致",
+    path: ["confirm_new_password"], // 錯誤訊息會掛在這個欄位下
+  });
+
+const updateUserProfileSchema = baseUserSchema.pick({
   name: true,
 });
-
 const userIdSchema = z.object({
   userId: z.string().uuid("格式錯誤"),
 });
@@ -32,6 +51,7 @@ const userIdSchema = z.object({
 module.exports = {
   baseUserSchema,
   loginUserSchema,
-  putUserSchema,
+  updateUserPasswordSchema,
+  updateUserProfileSchema,
   userIdSchema,
 };
