@@ -10,7 +10,7 @@ const { validate } = require("@/middlewares/validate.middleware");
 const { userIdSchema } = require("@/validations/user.schema");
 const {
   createCoachSchema,
-  coachIdSchema,
+  updateCoachSchema,
 } = require("@/validations/coach.schema");
 
 // 將使用者新增為教練
@@ -20,6 +20,18 @@ router.post(
   validate(createCoachSchema),
   validate(userIdSchema, "params"),
   adminCoachController.createCoach,
+);
+
+// 取得教練自己的詳細資訊
+// GET /api/admin/coaches
+router.get("/", adminCoachController.getCoach);
+
+// 變更教練資料
+// PUT /api/admin/coaches
+router.put(
+  "/",
+  validate(updateCoachSchema),
+  adminCoachController.updateCoach,
 );
 
 module.exports = router;

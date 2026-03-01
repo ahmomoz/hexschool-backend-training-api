@@ -2,6 +2,7 @@ const { dataSource } = require("@/db/data-source");
 const { Conflict, BadRequest } = require("@/errors");
 
 const userRepo = dataSource.getRepository("User");
+const coachRepo = dataSource.getRepository("Coach");
 
 const adminCoachService = {
   /**
@@ -46,6 +47,81 @@ const adminCoachService = {
         coach: savedCoach,
       };
     });
+  },
+
+  /**
+   * 取得教練自己的詳細資訊
+   * @param {string} id 使用者 ID
+   * @returns {Promise<Object>} 教練詳細資訊
+   */
+  async getCoach(id) {
+    const coach = await coachRepo.findOne({
+      where: { user_id: id },
+      relations: {
+        User: true,
+        CoachLinkSkill: true,
+      },
+      select: {
+        id: true,
+        user_id: true,
+        experience_years: true,
+        description: true,
+        profile_image_url: true,
+        created_at: true,
+        updated_at: true,
+        User: {
+          name: true,
+          role: true,
+        },
+        CoachLinkSkill: {
+          id: true,
+        },
+      },
+    });
+
+    if (!coach) throw BadRequest("找不到教練");
+
+    return {
+      id: coach.id,
+      experience_years: coach.experience_years,
+      description: coach.description,
+      profile_image_url: coach.profile_image_url,
+      skill_ids: coach.CoachLinkSkill.map((skill) => skill.id),
+    };
+  },
+
+  /**
+   * 變更教練資料
+   * @param {Object} coachData
+   * @returns {Promise<Object>} 包含使用者與教練資料的物件
+   */
+  async updateCoach(userId, coachData) {
+    const {
+      experience_years,
+      description,
+      profile_image_url = null,
+    } = coachData;
+
+    const existingCoach = await coachRepo.findOne({
+      where: { user_id: userId },
+      relations: { CoachLinkSkill: true },
+    });
+
+    if (!existingCoach) throw BadRequest("找不到教練");
+
+    existingCoach.experience_years = experience_years;
+    existingCoach.description = description;
+    existingCoach.profile_image_url = profile_image_url;
+
+    const savedCoach = await coachRepo.save(existingCoach);
+
+    return {
+      id: savedCoach.id,
+      experience_years: savedCoach.experience_years,
+      description: savedCoach.description,
+      profile_image_url: savedCoach.profile_image_url,
+      skill_ids: savedCoach.CoachLinkSkill.map((skill) => skill.id),
+    };
   },
 };
 

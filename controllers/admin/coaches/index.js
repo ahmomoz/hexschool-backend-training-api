@@ -17,6 +17,32 @@ const adminCoachController = {
       statusCode: HTTP_STATUS.CREATED,
     });
   }),
+
+  // 取得教練自己的詳細資訊
+  getCoach: catchAsync(async (req, res) => {
+    const { id } = req.user;
+
+    const data = await adminCoachService.getCoach(id);
+
+    sendSuccess(res, {
+      data: data,
+      message: "查詢成功",
+      statusCode: HTTP_STATUS.OK,
+    });
+  }),
+
+  // 變更教練資料
+  updateCoach: catchAsync(async (req, res, next) => {
+    const { id } = req.user;
+    const coachData = req.body;
+    const updateData = await adminCoachService.updateCoach(id, coachData);
+
+    sendSuccess(res, {
+      data: updateData,
+      message: "更新成功",
+      statusCode: HTTP_STATUS.OK,
+    });
+  }),
 };
 
 module.exports = adminCoachController;

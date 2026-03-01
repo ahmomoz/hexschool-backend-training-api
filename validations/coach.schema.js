@@ -11,8 +11,12 @@ const createCoachSchema = z.object({
     }),
 });
 
+const updateCoachSchema = createCoachSchema.extend({
+  skill_ids: z.array(z.string().uuid("格式錯誤")),
+});
+
 const coachIdSchema = z.object({
   coachId: z.string().uuid("格式錯誤"),
 });
 
-module.exports = { createCoachSchema, coachIdSchema };
+module.exports = { createCoachSchema, updateCoachSchema, coachIdSchema };

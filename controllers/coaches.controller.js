@@ -23,6 +23,7 @@ const coachController = {
     sendSuccess(res, {
       data: data,
       message: "查詢成功",
+      statusCode: HTTP_STATUS.OK,
     });
   }),
 
