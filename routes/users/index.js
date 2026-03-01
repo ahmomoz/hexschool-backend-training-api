@@ -55,4 +55,8 @@ router.put(
 // GET /api/users/credit-package
 router.get("/credit-package", isAuth, userController.getCreditPackage);
 
+// 取得已預約的課程列表
+// GET /api/users/courses
+router.get("/courses", isAuth, userController.getCourse);
+
 module.exports = router;

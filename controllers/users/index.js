@@ -71,6 +71,17 @@ const userController = {
       statusCode: HTTP_STATUS.OK,
     });
   }),
+
+  getCourse: catchAsync(async (req, res, next) => {
+    const { id } = req.user;
+    const userCourses = await userService.getCourses(id);
+
+    sendSuccess(res, {
+      data: userCourses,
+      message: "查詢成功",
+      statusCode: HTTP_STATUS.OK,
+    });
+  }),
 };
 
 module.exports = userController;

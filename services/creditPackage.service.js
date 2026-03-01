@@ -59,9 +59,9 @@ const creditPackageService = {
   },
 
   /**
-   * @description 使用者購買儲值方案
+   * @description 使用者購買方案
    * @param {string} userId - 使用者 ID
-   * @param {string} creditPackageId - 儲值方案 ID
+   * @param {string} creditPackageId - 購買方案 ID
    * @returns {Promise<void>}
    */
   async purchaseCreditPackage(userId, creditPackageId) {

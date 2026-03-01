@@ -4,9 +4,11 @@ const generateJWT = require("@/utils/generateJWT");
 const { dataSource } = require("@/db/data-source");
 const { Conflict, BadRequest } = require("@/errors");
 const { hashPassword, comparePassword } = require("@/utils/password");
+const { IsNull } = require("typeorm");
 
 const userRepo = dataSource.getRepository("User");
 const creditPurchaseRepo = dataSource.getRepository("CreditPurchase");
+const courseBookingRepo = dataSource.getRepository("CourseBooking");
 
 const userService = {
   /**
@@ -150,10 +152,10 @@ const userService = {
   /**
    * @description 取得使用者已購買的方案列表
    * @param {string} userId - 使用者 ID
-   * @returns {Promise<object>} 包含使用者已購買的方案列表物件
+   * @returns {Promise<Array<object>>} 包含使用者已購買的方案列表
    */
   async getCreditPackage(userId) {
-    const creditPurchase = await creditPurchaseRepo.find({
+    const creditPurchases = await creditPurchaseRepo.find({
       relations: {
         CreditPackage: true,
       },
@@ -170,12 +172,61 @@ const userService = {
       },
     });
 
-    return creditPurchase.map((item) => ({
+    return creditPurchases.map((item) => ({
       purchased_credits: item.purchased_credits,
       price_paid: item.price_paid,
-      name: item.CreditPackage.name,
+      name: item.CreditPackage?.name,
       purchase_at: item.purchaseAt,
     }));
+  },
+
+  /**
+   * @description 取得使用者已預約的課程列表
+   * @param {string} userId - 使用者 ID
+   * @returns {Promise<object>} 包含堂數資訊與預約列表
+   */
+  async getCourses(userId) {
+    // 取得使用者購買的總堂數
+    const totalPurchasedCredits =
+      (await creditPurchaseRepo.sum("purchased_credits", {
+        user_id: userId,
+      })) || 0;
+
+    // 取得使用者已預約的課程列表
+    const bookings = await courseBookingRepo.find({
+      relations: {
+        Course: {
+          User: true, // 取得教練資訊
+        },
+      },
+      where: {
+        user_id: userId,
+      },
+      order: {
+        bookingAt: "DESC",
+      },
+    });
+
+    // 計算已使用的堂數 (僅統計未取消的課程)
+    const usedCredits = bookings.filter((booking) => !booking.cancelledAt).length;
+
+    // 預約列表
+    const course_booking = bookings.map((booking) => ({
+      name: booking.Course?.name,
+      course_id: booking.course_id,
+      coach_name: booking.Course?.User?.name,
+      status: booking.status,
+      start_at: booking.Course?.start_at,
+      end_at: booking.Course?.end_at,
+      meeting_url: booking.Course?.meeting_url,
+      cancelled_at: booking.cancelledAt,
+    }));
+
+    return {
+      credit_remain: totalPurchasedCredits - usedCredits,
+      credit_usage: usedCredits,
+      course_booking,
+    };
   },
 };
 
