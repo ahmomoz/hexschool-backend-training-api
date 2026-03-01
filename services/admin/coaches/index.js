@@ -1,8 +1,11 @@
 const { dataSource } = require("@/db/data-source");
 const { Conflict, BadRequest } = require("@/errors");
+const { Between, In, IsNull } = require("typeorm");
 
 const userRepo = dataSource.getRepository("User");
 const coachRepo = dataSource.getRepository("Coach");
+const courseRepo = dataSource.getRepository("Course");
+const courseBookingRepo = dataSource.getRepository("CourseBooking");
 
 const adminCoachService = {
   /**
@@ -121,6 +124,62 @@ const adminCoachService = {
       description: savedCoach.description,
       profile_image_url: savedCoach.profile_image_url,
       skill_ids: savedCoach.CoachLinkSkill.map((skill) => skill.id),
+    };
+  },
+
+  /**
+   * 取得教練自己的月營收資料
+   * @param {string} id 使用者 ID
+   * @param {string} month 月份（需為全小寫月份名稱，例如：january, february）
+   * @returns {Promise<Object>} 教練的月營收資料
+   */
+  async getMonthRevenue(id, month) {
+    const monthNames = [
+      "january",
+      "february",
+      "march",
+      "april",
+      "may",
+      "june",
+      "july",
+      "august",
+      "september",
+      "october",
+      "november",
+      "december",
+    ];
+    const monthIndex = monthNames.indexOf(month?.toLowerCase());
+
+    if (monthIndex === -1) {
+      throw new BadRequest("欄位未填寫正確");
+    }
+
+    const coach = await coachRepo.findOneBy({ user_id: id });
+    if (!coach) {
+      throw new BadRequest("找不到教練");
+    }
+
+    const year = new Date().getFullYear();
+    const startDate = new Date(year, monthIndex, 1);
+    const endDate = new Date(year, monthIndex + 1, 0, 23, 59, 59, 999);
+
+    const courses = await courseRepo.find({
+      where: { user_id: id, start_at: Between(startDate, endDate) },
+      select: ["id"],
+    });
+
+    const course_count = courses.length;
+    if (course_count === 0) {
+      return { total: { participants: 0, revenue: 0, course_count: 0 } };
+    }
+
+    const courseIds = courses.map((c) => c.id);
+    const participants = await courseBookingRepo.count({
+      where: { course_id: In(courseIds), cancelledAt: IsNull() },
+    });
+
+    return {
+      total: { participants, revenue: participants * 1000, course_count },
     };
   },
 };

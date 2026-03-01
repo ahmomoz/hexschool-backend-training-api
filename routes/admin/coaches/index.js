@@ -28,10 +28,10 @@ router.get("/", adminCoachController.getCoach);
 
 // 變更教練資料
 // PUT /api/admin/coaches
-router.put(
-  "/",
-  validate(updateCoachSchema),
-  adminCoachController.updateCoach,
-);
+router.put("/", validate(updateCoachSchema), adminCoachController.updateCoach);
+
+// 取得教練自己的月營收資料
+// GET /api/admin/coaches/revenue?month=
+router.get("/revenue", adminCoachController.getMonthRevenue);
 
 module.exports = router;

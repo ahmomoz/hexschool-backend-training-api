@@ -43,6 +43,20 @@ const adminCoachController = {
       statusCode: HTTP_STATUS.OK,
     });
   }),
+
+  // 取得教練自己的月營收資料
+  getMonthRevenue: catchAsync(async (req, res) => {
+    const { id } = req.user;
+    const { month } = req.query;
+
+    const data = await adminCoachService.getMonthRevenue(id, month);
+
+    sendSuccess(res, {
+      data: data,
+      message: "查詢成功",
+      statusCode: HTTP_STATUS.OK,
+    });
+  }),
 };
 
 module.exports = adminCoachController;
