@@ -14,6 +14,7 @@ const isAuth = require("@/middlewares/auth.middleware")({
 const creditPackageRouter = require("@/routes/creditPackage.route");
 const userRouter = require("@/routes/users");
 const courseRouter = require("@/routes/courses.route");
+const coachRouter = require("@/routes/coaches.route");
 const adminSkillRouter = require("@/routes/admin/coaches/skill.route");
 const adminCourseRouter = require("@/routes/admin/coaches/courses.route");
 const adminCoachRouter = require("@/routes/admin/coaches");
@@ -22,6 +23,7 @@ const uploadRouter = require("@/routes/upload.route");
 // --- 公開路由 (不需要登入) ---
 router.use("/credit-package", creditPackageRouter);
 router.use("/courses", courseRouter);
+router.use("/coaches", coachRouter);
 
 // --- 公開與私有行為混合 (驗證控制在其路由裡) ---
 router.use("/users", userRouter);

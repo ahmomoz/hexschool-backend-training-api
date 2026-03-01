@@ -9,7 +9,11 @@ const courseController = {
     const { per, page } = req.query;
     const courseList = await courseService.getCourses(per, page);
 
-    sendSuccess(res, { data: courseList, message: "查詢成功" });
+    sendSuccess(res, {
+      data: courseList,
+      message: "查詢成功",
+      statusCode: HTTP_STATUS.OK,
+    });
   }),
 
   createCourse: catchAsync(async (req, res, next) => {
