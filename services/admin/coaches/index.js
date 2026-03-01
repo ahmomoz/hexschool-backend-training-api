@@ -55,7 +55,7 @@ const adminCoachService = {
    * @param {number} page 頁碼
    * @returns {Promise<Array<Object>>} 教練列表
    */
-  async getCoachList(per, page) {
+  async getCoaches(per, page) {
     // 使用 find 取代 findAndCount (若不需要總數回傳)
     const coaches = await coachRepo.find({
       skip: (page - 1) * per,
@@ -83,7 +83,7 @@ const adminCoachService = {
    * @param {string} coachId 教練 ID
    * @returns {Promise<Object>} 教練詳細資訊 (包含使用者資訊)
    */
-  async getCoaches(coachId) {
+  async getCoach(coachId) {
     const coach = await coachRepo.findOne({
       where: { id: coachId },
       relations: {

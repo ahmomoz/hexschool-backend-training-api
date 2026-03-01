@@ -19,19 +19,19 @@ const adminCoachController = {
   }),
 
   // 取得教練列表
-  getCoachList: catchAsync(async (req, res) => {
+  getCoaches: catchAsync(async (req, res) => {
     const { per, page } = req.query;
 
-    const coachList = await adminCoachService.getCoachList(per, page);
+    const coachList = await adminCoachService.getCoaches(per, page);
 
     sendSuccess(res, { data: coachList, message: "查詢成功" });
   }),
 
   // 取得教練詳細
-  getCoaches: catchAsync(async (req, res) => {
+  getCoach: catchAsync(async (req, res) => {
     const { coachId } = req.params;
 
-    const data = await adminCoachService.getCoaches(coachId);
+    const data = await adminCoachService.getCoach(coachId);
 
     sendSuccess(res, {
       data: data,

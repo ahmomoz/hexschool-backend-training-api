@@ -33,7 +33,7 @@ router.get(
     }),
     "query",
   ),
-  adminCoachController.getCoachList,
+  adminCoachController.getCoaches,
 );
 
 // 取得教練詳細資訊
@@ -41,7 +41,7 @@ router.get(
 router.get(
   "/:coachId",
   validate(coachIdSchema, "params"),
-  adminCoachController.getCoaches,
+  adminCoachController.getCoach,
 );
 
 module.exports = router;

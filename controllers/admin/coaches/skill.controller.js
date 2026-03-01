@@ -6,7 +6,7 @@ const { HTTP_STATUS } = require("@/constants/httpStatus");
 
 const adminSkillController = {
   getSkills: catchAsync(async (req, res) => {
-    const data = await adminSkillService.getSkillList();
+    const data = await adminSkillService.getSkills();
     sendSuccess(res, { data, message: "查詢成功" });
   }),
 

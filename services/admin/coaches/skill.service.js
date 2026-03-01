@@ -9,7 +9,7 @@ const adminSkillService = {
    * 透過 select 限制欄位，避免在記憶體中使用 map 處理大量資料
    * @returns {Promise<Array<Object>>} 技能列表
    */
-  async getSkillList() {
+  async getSkills() {
     return await skillRepo.find({
       select: ["id", "name"],
     });
