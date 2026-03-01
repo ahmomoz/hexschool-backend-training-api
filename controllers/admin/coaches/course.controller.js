@@ -5,6 +5,17 @@ const { sendSuccess } = require("@/utils/response");
 const { HTTP_STATUS } = require("@/constants/httpStatus");
 
 const adminCourseController = {
+  getCourses: catchAsync(async (req, res, next) => {
+    const { id } = req.user;
+    const courses = await adminCourseService.getCourses(id);
+
+    sendSuccess(res, {
+      data: courses,
+      message: "查詢成功",
+      statusCode: HTTP_STATUS.OK,
+    });
+  }),
+
   createCourse: catchAsync(async (req, res, next) => {
     const courseData = req.body;
     const createdData = await adminCourseService.createCourse(courseData);

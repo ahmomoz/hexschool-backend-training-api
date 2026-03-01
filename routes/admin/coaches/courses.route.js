@@ -14,6 +14,14 @@ const {
   courseIdSchema,
 } = require("@/validations/course.schema");
 
+// 取得教練自己的課程列表
+// GET /api/admin/coaches/courses
+router.get(
+  "/",
+  isCoach,
+  adminCourseController.getCourses,
+);
+
 // 新增教練課程資料
 // POST /api/admin/coaches/courses
 router.post(

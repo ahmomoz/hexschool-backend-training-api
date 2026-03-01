@@ -7,6 +7,30 @@ const courseRepo = dataSource.getRepository("Course");
 
 const adminCourseService = {
   /**
+   * 取得教練自己的課程列表
+   * @param {Array} course
+   */
+  async getCourses(id) {
+    const courses = await courseRepo.find({
+      where: { user_id: id },
+      relations: {
+        User: true,
+        Skill: true,
+      },
+    });
+
+    return courses.map((course) => ({
+      id: course.id,
+      coach_name: course.User?.name,
+      skill_name: course.Skill?.name,
+      name: course.name,
+      description: course.description,
+      start_at: course.start_at,
+      end_at: course.end_at,
+      max_participants: course.max_participants,
+    }));
+  },
+  /**
    * 新增課程
    * @param {Object} courseData
    */
