@@ -17,27 +17,6 @@ const adminCoachController = {
       statusCode: HTTP_STATUS.CREATED,
     });
   }),
-
-  // 取得教練列表
-  getCoaches: catchAsync(async (req, res) => {
-    const { per, page } = req.query;
-
-    const coachList = await adminCoachService.getCoaches(per, page);
-
-    sendSuccess(res, { data: coachList, message: "查詢成功" });
-  }),
-
-  // 取得教練詳細
-  getCoach: catchAsync(async (req, res) => {
-    const { coachId } = req.params;
-
-    const data = await adminCoachService.getCoach(coachId);
-
-    sendSuccess(res, {
-      data: data,
-      message: "查詢成功",
-    });
-  }),
 };
 
 module.exports = adminCoachController;

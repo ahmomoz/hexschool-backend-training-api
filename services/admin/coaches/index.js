@@ -2,7 +2,6 @@ const { dataSource } = require("@/db/data-source");
 const { Conflict, BadRequest } = require("@/errors");
 
 const userRepo = dataSource.getRepository("User");
-const coachRepo = dataSource.getRepository("Coach");
 
 const adminCoachService = {
   /**
@@ -47,72 +46,6 @@ const adminCoachService = {
         coach: savedCoach,
       };
     });
-  },
-
-  /**
-   * 取得教練列表
-   * @param {number} per 每頁筆數
-   * @param {number} page 頁碼
-   * @returns {Promise<Array<Object>>} 教練列表
-   */
-  async getCoaches(per, page) {
-    // 使用 find 取代 findAndCount (若不需要總數回傳)
-    const coaches = await coachRepo.find({
-      skip: (page - 1) * per,
-      take: per,
-      relations: {
-        User: true,
-      },
-      // 只抓取必要的欄位，優化效能
-      select: {
-        id: true,
-        User: {
-          name: true,
-        },
-      },
-    });
-
-    return coaches.map((coach) => ({
-      id: coach.id,
-      name: coach.User?.name,
-    }));
-  },
-
-  /**
-   * 取得教練詳細資訊
-   * @param {string} coachId 教練 ID
-   * @returns {Promise<Object>} 教練詳細資訊 (包含使用者資訊)
-   */
-  async getCoach(coachId) {
-    const coach = await coachRepo.findOne({
-      where: { id: coachId },
-      relations: {
-        User: true,
-      },
-      select: {
-        id: true,
-        user_id: true,
-        experience_years: true,
-        description: true,
-        profile_image_url: true,
-        created_at: true,
-        updated_at: true,
-        User: {
-          name: true,
-          role: true,
-        },
-      },
-    });
-
-    if (!coach) throw BadRequest("找不到該教練");
-
-    // 透過結構賦值優雅地拆分 User 與 Coach 資訊
-    const { User, ...coachInfo } = coach;
-
-    return {
-      user: User,
-      coach: coachInfo,
-    };
   },
 };
 

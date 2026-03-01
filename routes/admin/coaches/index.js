@@ -22,26 +22,4 @@ router.post(
   adminCoachController.createCoach,
 );
 
-// 取得教練列表
-// GET /api/coaches/?per=?page=?
-router.get(
-  "/",
-  validate(
-    z.object({
-      per: z.coerce.number().int().min(1).default(10),
-      page: z.coerce.number().int().min(1).default(1),
-    }),
-    "query",
-  ),
-  adminCoachController.getCoaches,
-);
-
-// 取得教練詳細資訊
-// GET /api/coaches/:coachId
-router.get(
-  "/:coachId",
-  validate(coachIdSchema, "params"),
-  adminCoachController.getCoach,
-);
-
 module.exports = router;
