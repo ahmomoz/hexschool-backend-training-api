@@ -30,6 +30,33 @@ const adminCourseService = {
       max_participants: course.max_participants,
     }));
   },
+
+  /**
+   * 取得教練自己的課程詳細資料
+   * @param {Object} course
+   */
+  async getCourse(id, courseId) {
+    const course = await courseRepo.findOne({
+      where: { user_id: id, id: courseId },
+      relations: {
+        User: true,
+        Skill: true,
+      },
+    });
+
+    if (!course) throw BadRequest("找不到該課程");
+
+    return {
+      id: course.id,
+      skill_name: course.Skill?.name,
+      name: course.name,
+      description: course.description,
+      start_at: course.start_at,
+      end_at: course.end_at,
+      max_participants: course.max_participants,
+    };
+  },
+
   /**
    * 新增課程
    * @param {Object} courseData

@@ -16,11 +16,11 @@ const {
 
 // 取得教練自己的課程列表
 // GET /api/admin/coaches/courses
-router.get(
-  "/",
-  isCoach,
-  adminCourseController.getCourses,
-);
+router.get("/", isCoach, adminCourseController.getCourses);
+
+// 取得教練自己的課程詳細資料
+// GET /api/admin/coaches/courses/courseId
+router.get("/:courseId", isCoach, adminCourseController.getCourse);
 
 // 新增教練課程資料
 // POST /api/admin/coaches/courses

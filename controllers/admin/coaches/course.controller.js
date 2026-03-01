@@ -16,6 +16,18 @@ const adminCourseController = {
     });
   }),
 
+  getCourse: catchAsync(async (req, res, next) => {
+    const { id } = req.user;
+    const { courseId } = req.params;
+    const course = await adminCourseService.getCourse(id, courseId);
+
+    sendSuccess(res, {
+      data: course,
+      message: "查詢成功",
+      statusCode: HTTP_STATUS.OK,
+    });
+  }),
+
   createCourse: catchAsync(async (req, res, next) => {
     const courseData = req.body;
     const createdData = await adminCourseService.createCourse(courseData);
