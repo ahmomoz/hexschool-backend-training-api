@@ -31,10 +31,10 @@ const creditPackageController = {
   }),
 
   purchaseCreditPackage: catchAsync(async (req, res, next) => {
-    const { userId } = req.user;
+    const { id } = req.user;
     const { creditPackageId } = req.params;
 
-    await creditPackageService.purchaseCreditPackage(userId, creditPackageId);
+    await creditPackageService.purchaseCreditPackage(id, creditPackageId);
 
     sendSuccess(res, {
       message: "購買成功",
